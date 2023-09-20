@@ -1,6 +1,6 @@
 # Component Examples
 
-With ShardClient, you can have many different events, including custom ones. The built in event handler is extremely flexible in the way you can organize and format your events.
+We've provided several different options for creating components in a way that you will enjoy. The built in component handler and events are extremely flexible in the way you can organize and format your components.
 
 ## Files
 
