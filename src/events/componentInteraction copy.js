@@ -1,5 +1,5 @@
 const { EventBuilder, Events } = require('../classes/builders/Events');
-const { CommandContext } = require('../classes/builders/Context');
+const { ComponentContext } = require('../classes/builders/Context');
 module.exports = new EventBuilder()
   .setName('componentInteraction')
   .setTrigger(Events.ComponentEvent)
@@ -14,7 +14,7 @@ module.exports = new EventBuilder()
         ephemeral: true,
       });
 
-    const context = new CommandContext(interaction, client, data, data2, data3);
+    const context = new ComponentContext(interaction, client, data, data2, data3);
 
     try {
       await component.callback(context);

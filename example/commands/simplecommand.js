@@ -9,5 +9,13 @@ module.exports = new CommandBuilder()
     // Autocomplete code
   })
   .setCallback(ctx => {
-    // Command code
+    const data = 1;
+    const data2 = 2;
+    const data3 = 3;
+    const ExampleRow = new ctx.Discord.ActionRowBuilder().addComponents(
+      new ctx.Discord.ButtonBuilder()
+        .setCustomId(`ExampleButton~${data}~${data2}~${data3}`)
+        .setLabel('Example')
+        .setStyle(ctx.Discord.ButtonStyle.Success)
+    )
   });

@@ -5,7 +5,7 @@ We've provided several different options for creating commands in a way that you
 
 ## Files
 
-- simplecommand.js shows you how to create a command with no subcommands.
+- simplecommand.js shows you how to create a command with no subcommands plus a simple button example.
 - simplesubcommand folder will show you how to create a command with subcommmands the "normal" way.
 - advancedsubcommand folder will show you how to create a command with subcommands that are created and run from other files. This provides an extra layer of organization to your file structure.
 
