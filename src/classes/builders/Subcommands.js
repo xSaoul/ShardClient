@@ -4,9 +4,9 @@ const { SlashCommandSubcommandBuilder } = require('discord.js');
  * A custom command builder that extends the SlashCommandSubcommandBuilder class from discord.js.
  * This builder is used to create subcommands for Discord slash commands.
  */
-class SubCommandBuilder extends SlashCommandSubcommandBuilder {
+class SubcommandBuilder extends SlashCommandSubcommandBuilder {
   /**
-   * Creates an instance of the SubCommandBuilder class.
+   * Creates an instance of the SubcommandBuilder class.
    * @constructor
    */
   constructor() {
@@ -36,7 +36,7 @@ class SubCommandBuilder extends SlashCommandSubcommandBuilder {
   /**
    * Sets whether or not the subcommand should be included in the help menu.
    * @param {Boolean} enabled - True if the command should be displayed in the help menu.
-   * @returns {SubCommandBuilder} - Returns the SubCommandBuilder instance for chaining.
+   * @returns {SubcommandBuilder} - Returns the SubcommandBuilder instance for chaining.
    */
   setHelp(enabled) {
     this.help = enabled;
@@ -46,7 +46,7 @@ class SubCommandBuilder extends SlashCommandSubcommandBuilder {
   /**
    * Sets the main command this subcommand is attached to.
    * @param {String} name - The name of the main command.
-   * @returns {SubCommandBuilder} - Returns the SubCommandBuilder instance for chaining.
+   * @returns {SubcommandBuilder} - Returns the SubcommandBuilder instance for chaining.
    */
   setMainCommand(name) {
     this.mainCommand = name;
@@ -56,7 +56,7 @@ class SubCommandBuilder extends SlashCommandSubcommandBuilder {
   /**
    * Sets the callback function to be run when the subcommand is called.
    * @param {Function} callback - The function to be executed when the subcommand is invoked.
-   * @returns {SubCommandBuilder} - Returns the SubCommandBuilder instance for chaining.
+   * @returns {SubcommandBuilder} - Returns the SubcommandBuilder instance for chaining.
    */
   setCallback(callback) {
     this.callback = callback;
@@ -66,7 +66,7 @@ class SubCommandBuilder extends SlashCommandSubcommandBuilder {
   /**
    * Sets the autocallback function to be run when the autocomplete function is called.
    * @param {Function} autocallback - The function to be executed when an autocomplete option is invoked.
-   * @returns {SubCommandBuilder} - Returns the SubCommandBuilder instance for chaining.
+   * @returns {SubcommandBuilder} - Returns the SubcommandBuilder instance for chaining.
    */
   setAutoCallback(autocallback) {
     this.autocallback = autocallback;
@@ -74,4 +74,4 @@ class SubCommandBuilder extends SlashCommandSubcommandBuilder {
   }
 }
 
-module.exports = { SubCommandBuilder };
+module.exports = { SubcommandBuilder };

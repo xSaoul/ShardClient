@@ -1,8 +1,8 @@
 class CommandContext {
   constructor(interaction, client) {
-    this.interaction = interaction;
     this.Discord = client.Discord;
     this.client = client;
+    this.interaction = interaction;
     this.channel = interaction.channel;
     this.user = interaction.member.user;
     this.member = interaction.member;

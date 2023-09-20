@@ -1,5 +1,5 @@
-const { SubCommandBuilder } = require('shardclient');
-module.exports = new SubCommandBuilder()
+const { SubcommandBuilder } = require('shardclient');
+module.exports = new SubcommandBuilder()
   .setName('subcommand2')
   .setMainCommand('maincommand') // Set to the main commands name
   .setHelp(true) // Whether or not the subcommand should be displayed in the help menu
