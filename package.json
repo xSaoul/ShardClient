@@ -1,0 +1,39 @@
+{
+  "name": "shardclient",
+  "version": "1.0.0",
+  "description": "ShardClient is an easy to use discord.js extension that creates a client and handles commands, events, and message components.",
+  "main": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xSaoul/ShardClient"
+  },
+  "keywords": [
+    "discord.js",
+    "client",
+    "bot",
+    "Discord",
+    "JavaScript",
+    "library",
+    "API",
+    "development",
+    "chat",
+    "chatbot",
+    "discord.js extension",
+    "framework",
+    "Node.js"
+  ],
+  "author": "ShardProductions",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "cli-table": "^0.3.11",
+    "discord.js": "^14.13.0",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.22.15",
+    "eslint": "^8.49.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "prettier": "^3.0.3"
+  }
+}
