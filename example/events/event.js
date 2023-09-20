@@ -1,8 +1,8 @@
-const { EventBuilder } = require('shardclient');
+const { EventBuilder, Events } = require('shardclient');
 module.exports = new EventBuilder()
   .setName('ReadyMain')
-  .setTrigger('ready')
+  .setTrigger(Events.ClientReady)
   .setOnce(true)
-  .setCallback(() => {
+  .setCallback((client) => {
     console.log('Bot is ready!');
   });
