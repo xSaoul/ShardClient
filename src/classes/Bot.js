@@ -7,6 +7,7 @@ const path = require('path');
 require('dotenv').config();
 const Table = require('cli-table');
 
+// processApp() exclusions
 const commonExclusions = [
   'node_modules',
   'package.json',
@@ -22,7 +23,6 @@ const commonExclusions = [
   '.eslintrc.json',
   '.prettierrc.js',
   '.prettierrc.json',
-  // Add more as needed
 ];
 
 /** Class representing the bot with discord.js client attached.
@@ -74,11 +74,13 @@ class ShardClient extends Client {
 
   /**
    * Processes main directory and creates collections of commands, events, and components.
-   * @param {*} client discord.js client object
-   * @param {*} dirPath main directory, defaults to src from working directory
-   * @param {*} currentDir current directory being processed
+   * @param {Client} client discord.js client object
+   * @param {string} guildCommandsId - Id of the guild for commands (optional).
+   * @param {string} dirPath main directory, defaults to src from working directory
+   * @param {string} currentDir current directory being processed
+   * @param {boolean} initialCall - Indicates if this is the initial call
    */
-  async processApp(client, dirPath, currentDir = '', initialCall = true) {
+  async processApp(client, guildCommandsId, dirPath, currentDir = '', initialCall = true) {
     // register local events first
     if (initialCall) {
       const eventsFolderPath = path.join(__dirname, '..', 'events');
@@ -110,7 +112,7 @@ class ShardClient extends Client {
       }
       if (stats.isDirectory()) {
         // Directory found, process again
-        this.processApp(client, itemPath, path.join(currentDir, item));
+        this.processApp(client, guildCommandsId, itemPath, path.join(currentDir, item));
       } else if (stats.isFile() && path.extname(item) === '.js') {
         // JS file found, process as needed
         try {
@@ -121,7 +123,7 @@ class ShardClient extends Client {
           if (req.callback?.toString().trim() === '() => {}') req.error = 'Callback Error';
           // attach item to its respective collection, if one does not exist, create it
           if (!client[req._type]) client[req._type] = new Collection();
-          client[req._type].set(req.name, req);
+          client[req._type].set(req.name || req.customId || req.trigger, req);
           // if the collection type is not logged in usedTypes, add it
           if (!this.usedTypes.has(req._type)) this.usedTypes.add(req._type);
         } catch (error) {
@@ -135,7 +137,7 @@ class ShardClient extends Client {
     } else {
       console.log(`${chalk.hex('#8AFFF9')('COMPLETED PROCESSING')} for ${client.user.username}`);
       // process only what types actually exist
-      const processCommandsPromise = this.usedTypes.has('commands') ? this.processCommands(client) : null;
+      const processCommandsPromise = this.usedTypes.has('commands') ? this.processCommands(client, guildCommandsId) : null;
       const processEventsPromise = this.usedTypes.has('events') ? this.processEvents(client) : null;
       const processComponentsPromise = this.usedTypes.has('components') ? this.processComponents(client) : null;
       await Promise.all([processCommandsPromise, processEventsPromise, processComponentsPromise]);
@@ -149,9 +151,10 @@ class ShardClient extends Client {
    * and logs the success or failure of each command creation in a table.
    *
    * @param {Discord.Client} client - The Discord client to create commands for.
+   * @param {string} guildCommandsId - Id of the guild for commands (optional).
    * @returns {Promise<void>} - A promise that resolves when all commands have been processed.
    */
-  async processCommands(client) {
+  async processCommands(client, guildCommandsId) {
     const table = new Table({
       head: [chalk.hex('#00DBFF')('Command Name'), chalk.hex('#00DBFF')('File Path'), chalk.hex('#00DBFF')('Status')],
       colWidths: [30, 50, 10],
@@ -162,8 +165,9 @@ class ShardClient extends Client {
       if (!command.error) {
         if (command.category?.length > 32)
           return table.push([chalk.hex('#8AFFF9')('Category too long'), chalk.hex('#8AFFF9')(command.path), chalk.hex('#FF1C1C')('Failure')]);
+
         const promise = client.application.commands
-          .create(command.toJSON(), '925975283511746601')
+          .create(command.toJSON(), guildCommandsId)
           .then(appCommand => {
             command.id = appCommand.id;
             table.push([chalk.hex('#8AFFF9')(command.name), chalk.hex('#8AFFF9')(command.path), chalk.hex('#1CFF43')('Success')]);
@@ -185,11 +189,7 @@ class ShardClient extends Client {
 
   /**
    * Process and manage events.
-   *
-   * Iterates through events and sets up event listeners,logs the success
-   * or failure of event processing in a table, and emits a 'ClientReady' event when finished.
-   *
-   * @param {Discord.Client} client - The Discord client to process events with.
+   * @param {Client} client - The Discord client to process events with
    */
   processEvents(client) {
     const table = new Table({
@@ -218,6 +218,10 @@ class ShardClient extends Client {
     return client.emit(Events.ClientReady, client);
   }
 
+  /**
+   * Process components.
+   * @param {Client} client - The Discord client to process components with
+   */
   processComponents(client) {
     const table = new Table({
       head: [chalk.hex('#FF5BE5')('Event Name'), chalk.hex('#FF5BE5')('File Path'), chalk.hex('#FF5BE5')('Status')],
@@ -233,19 +237,24 @@ class ShardClient extends Client {
     });
     console.log(table.toString());
   }
+
   /**
    * Method used to login and being processing commands, events, and components.
    *
    * Will wait for a ClientReady event and output the login time.
    *
    * @override
-   * @param {{token: String, processPath: String}} options token used for login and processPath to find commands, events, and components
+   * @param {Object} options - Options for login and processing
+   * @param {string} options.token - Token used for login
+   * @param {string} options.processPath - Path to find commands, events, and components
+   * @param {string} options.guildCommandsId - Id of the guild for commands (optional)
    * @description Leave token blank to default to its environment variable (TOKEN)
-   * @description Leave processPath blank to default to src folder on the working directory.
+   * @description Leave processPath blank to default to 'src' folder in the working directory.
+   * @description Leave guildCommandsId blank to default to global commands.
    * @throws {Error} Throws an error if environment variable TOKEN is missing and a token is not provided.
    */
   login(options = {}) {
-    const { token, processPath } = options;
+    const { token, processPath, guildCommandsId } = options;
     this.token = token || process.env.TOKEN;
     const dirPath = processPath ? path.join(process.cwd(), processPath) : process.cwd();
     const readyStart = process.hrtime();
@@ -253,8 +262,8 @@ class ShardClient extends Client {
       const readyEnd = process.hrtime(readyStart);
       const readyTotal = (readyEnd[0] * 1e9 + readyEnd[1]) / 1e6;
       console.log(chalk.hex('#92fc74')(`Logged in as ${client.user.tag} (${readyTotal.toFixed(2)}ms)`));
-      // client.application.commands.set([], '925975283511746601');
-      await this.processApp(client, dirPath);
+      await client.application.commands.set([]);
+      await this.processApp(client, guildCommandsId, dirPath);
       client.on(Events.InteractionCreate, interaction => {
         if (interaction.isChatInputCommand() || interaction.isAutocomplete()) return client.emit(Events.CommandEvent, (client, interaction));
         if (interaction.isButton() || interaction.isAnySelectMenu()) return client.emit(Events.ComponentEvent, (client, interaction));
