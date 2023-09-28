@@ -1,6 +1,6 @@
 {
   "name": "shardclient",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "ShardClient is an easy to use discord.js extension that creates a client and handles commands, events, and message components.",
   "main": "index.js",
   "repository": {
