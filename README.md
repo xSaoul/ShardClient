@@ -11,13 +11,19 @@ Welcome to ShardClient, a powerful extension for Discord.js that enhances your b
 - **Main & Subcommands**: Easily define main commands and subcommands for later use.
 - **Modularization**: Split commands and subcommands into separate files for better organization.
 
+> **[Command Documentation](./example/commands/readme.md)**
+
 ### Events
 - **Custom Events**: Custom events for each interaction type for greater control over your bot.
 - **Flexible Event Naming**: Optional event naming for your convenience.
 
+> **[Event Documentation](./example/events/readme.md)**
+
 ### Components
 - **Component Interactions**: Move message component interactions into separate files for organization.
 - **Optional Naming**: Name your interactions as you see fit.
+
+> **[Component Documentation](./example/components/readme.md)**
 
 ### Context
 - **Command & Interaction Context**: Creates a command and interaction context object for easy access to all parameters.

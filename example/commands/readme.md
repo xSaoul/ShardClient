@@ -1,38 +1,56 @@
 # Command Examples
 
-We've provided several different options for creating commands in a way that you will enjoy. The built in command handler and events are extremely flexible in the way you can organize and format your commands. They also import all discord.js methods so that you can keep writing commands they way you're used to with extra functionality provided by us. 
-
+In this guide, we offer various options for creating commands using the ShardClient library, providing flexibility and extra functionality while allowing you to maintain your familiar discord.js command writing style. We've organized these examples for your convenience.
 
 ## Files
 
-- simplecommand.js shows you how to create a command with no subcommands plus a simple button example.
-- simplesubcommand folder will show you how to create a command with subcommmands the "normal" way.
-- advancedsubcommand folder will show you how to create a command with subcommands that are created and run from other files. This provides an extra layer of organization to your file structure.
+1. **[simplecommand.js](./simplecommand.js)**: Demonstrates how to create a command with no subcommands, along with a simple button example.
+2. **[simplesubcommand folder](./simplesubcommand/)**: Guides you on creating a command with subcommands using the "normal" approach.
+3. **[advancedsubcommand folder](./advancedsubcommand/)**: Shows how to create subcommands in separate files, adding an additional layer of organization to your file structure.
 
 ## Usage
-ShardClient has added two extremely useful classes for you to use that extend the discord.js native ones. These are the *CommandBuilder* and the *SubcommandBuilder*. Both classes include custom methods with advanced functionality like categories. They also have jsdoc included, so intellisense in VScode can help make the development process that much easier.
 
-**Importing**
-const {CommandBuilder} = require('shardclient')
-const {SubcommandBuilder} = require('shardclient')
+ShardClient introduces two essential classes that extend the capabilities of discord.js: *CommandBuilder* and *SubcommandBuilder*. These classes provide advanced functionality and come with integrated JSDoc support for an improved development experience in VSCode.
 
-**Building**
-module.exports  =  new  CommandBuilder()
-module.exports  =  new  SubcommandBuilder()
+### Functionality
 
-### Context
-The bot automatically creates a "context" object as a parameter when calling commands. This can then be either destructured or used as a normal object.
+- Category {String}
+- Help {Boolean} Can be useful when developing a help command.
+- id {String} Automatically attaches the commandId to the builder object for later use
 
-**What's included?**
-ctx.Discord - discord.js, you can skip `const Discord = require('discord');`
-ctx.client - client
-ctx.interaction - interaction
-ctx.channel - interaction.channel
-ctx.user - interaction.member.user
-ctx.member - interaction.member
-ctx.guild - interaction.guild
+## Importing
 
-**Desctructuring**
-You can destructure the object as follows
-`const {Discord, client, interaction, channel, user, member, guild} = ctx`
-This lets you do things like `interaction.reply()` rather than `ctx.interaction.reply`
+```javascript
+const { CommandBuilder } = require('shardclient');
+const { SubcommandBuilder } = require('shardclient');
+```
+
+### Building
+
+```javascript
+module.exports = new CommandBuilder();
+module.exports = new SubcommandBuilder();
+```
+
+## Context
+
+The ShardClient library automatically generates a "context" object as a parameter when invoking commands. You can destructure this object for easier access or use it as a regular object.
+
+### Included Properties
+
+- `ctx.Discord`: discord.js package import
+- `ctx.client`: Discord client
+- `ctx.interaction`: Interaction object
+- `ctx.channel`: Interaction's channel
+- `ctx.user`: Interaction's user
+- `ctx.member`: Interaction's member
+- `ctx.guild`: Interaction's guild
+
+### Destructuring
+
+You can, optionally, destructure the context object as shown below:
+
+```javascript
+const { Discord, client, interaction, channel, user, member, guild } = ctx;
+```
+This allows you to perform actions like `interaction.reply()` directly, without referencing `ctx.interaction.reply`.

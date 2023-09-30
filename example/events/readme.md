@@ -1,15 +1,21 @@
 # Event Examples
 
-With ShardClient you can have all your events in different files with the added benefit of custom events, as well as having multiple of the same event for organization.
+With ShardClient, you can organize your events in seperate files, create multiple instances of the same event, as well as optionally name your events for your particular organization needs.
 
 ## Files
 
-- event.js shows you how to create a simple ready event.
+- **[event.js](./event.js)**: Demonstrates how to create a simple "ready" event.
 
 ## Usage
 
 **Importing**
-const {EventBuilder, Events} =  require('shardclient');
+
+```javascript
+const { EventBuilder, Events } = require('shardclient');
+```
 
 **Building**
-module.exports  =  new  EventBuilder()
+
+```javascript
+module.exports = new EventBuilder();
+```

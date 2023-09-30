@@ -1,40 +1,60 @@
 # Component Examples
 
-We've provided several different options for creating components in a way that you will enjoy. The built in component handler and events are extremely flexible in the way you can organize and format your components.
+In this guide, we present various options for creating components using the ShardClient library, offering flexibility and enhanced functionality for organizing and formatting your components.
 
 ## Files
 
-- button.js shows you how to create a button.
+- **[button.js](./button.js)**: Demonstrates how to create a button component.
 
-Both button and menu files can be created and executed with the example structure. 
-```
-> ℹ️ Menu includes ChannelSelectMenu, MentionbleSelectMenu, RoleSelectMenu, StringSelectMenu, and UserSelectMenu
-```
+Both button and menu files can be created and executed using the example structure.
+
+> _**Note:**_ Menu includes ChannelSelectMenu, MentionbleSelectMenu, RoleSelectMenu, StringSelectMenu, and UserSelectMenu
 
 ## Usage
 
-**Importing**
-const {ComponentBuilder} = require('shardclient')
+### Importing
 
-**Building**
-module.exports  =  new  ComponentBuilder()
+```javascript
+const {ComponentBuilder} = require('shardclient');
+```
 
-### Context
-The bot automatically creates a "context" object as a parameter when calling components. This can then be either destructured or used as a normal object.
+### Building
 
-**What's included?**
-ctx.Discord - discord.js, you can skip `const Discord = require('discord');`
-ctx.client - client
-ctx.interaction - interaction
-ctx.channel - interaction.channel
-ctx.user - interaction.member.user
-ctx.member - interaction.member
-ctx.guild - interaction.guild
-ctx.data - any variable you would like to pass to the component (can be excluded)
-ctx.data2 - any variable you would like to pass to the component (can be excluded)
-ctx.data3 - any variable you would like to pass to the component (can be excluded)
+```javascript
+module.exports = new ComponentBuilder();
+```
 
-**Desctructuring**
-You can destructure the object as follows
-`const {Discord, client, interaction, channel, user, member, guild, data, data2, data3} = ctx`
-This lets you do things like `interaction.reply()` rather than `ctx.interaction.reply`
+### Attaching Data
+
+When making a component, you can attach extra variables to the component using its customId. This will then be destructured automatically for you during the interaction.
+
+```javascript
+.setCustomId('customId~${var1}~${var2}~${var3}')
+```
+
+## Context
+
+The ShardClient library automatically generates a "context" object as a parameter when invoking commands. You can destructure this object for easier access or use it as a regular object.
+
+### Included Properties
+
+- `ctx.Discord`: discord.js package import
+- `ctx.client`: Discord client
+- `ctx.interaction`: Interaction object
+- `ctx.channel`: Interaction's channel
+- `ctx.user`: Interaction's user
+- `ctx.member`: Interaction's member
+- `ctx.guild`: Interaction's guild
+- `ctx.data`: Any variable you'd like to pass to the component (optional)
+- `ctx.data2`: Another variable you'd like to pass to the component (optional)
+- `ctx.data3`: Yet another variable you'd like to pass to the component (optional)
+
+### Destructuring
+
+You can, optionally, destructure the context object as shown below:
+
+```javascript
+const { Discord, client, interaction, channel, user, member, guild, data, data2, data3 } = ctx;
+```
+
+This allows you to perform actions like `interaction.reply()` directly, without referencing `ctx.interaction.reply`.

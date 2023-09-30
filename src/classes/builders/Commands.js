@@ -12,7 +12,7 @@ class CommandBuilder extends SlashCommandBuilder {
   constructor() {
     super();
     /**
-     * Type, used for Bot class druing setup.
+     * Type, used for Bot class during setup.
      * @type {String}
      * @private
      */

@@ -1,9 +1,20 @@
-const { ShardClient } = require('shardclient')
+const { ShardClient, ClientOptions } = require('shardclient')
+const { Partials, GatewayIntentBits } = require('discord.js');
 const bot = new ShardClient()
-/* 
-Optional client options:
-token - Token used for login (Will default to environment variable TOKEN)
-processPath - Path to start the directory sweep from (Will default to process root)
-guildCommandsId - Id of the guild for commands (will default to global commands)
-*/
-bot.login({});
+bot.login(
+  new ClientOptions()
+  .setPartials([
+    Partials.Message, 
+    Partials.Channel, 
+    Partials.Reaction
+  ])
+  .setIntents(
+    GatewayIntentBits.Guilds,
+  )
+  .setToken('example-token') // optional, defaults to environment variable TOKEN
+  .setProcessPath('./example-path') // optional, defaults to process root
+  .setGuildCommandsId('example-guildId') // optional, defaults to global commands
+  .setNativeCommandEvent(false) // optional, enables/disables the built in command event, defaults to false
+  .setNativeComponentEvent(false) // optional, enables/disables the built in component event, defaults to false
+  .setNativeModalEvent(false) // optional, enables/disables the built in modal event, defaults to false (NOT YET IMPLIMENTED)
+);
