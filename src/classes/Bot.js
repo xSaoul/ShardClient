@@ -1,4 +1,5 @@
 const { Client, Collection, Partials } = require('discord.js');
+const { ClientOptions } = require('./util/ClientOptions');
 const { Events } = require('./builders/Events');
 const Discord = require('discord.js');
 const chalk = require('chalk');
@@ -245,16 +246,17 @@ class ShardClient extends Client {
    *
    * @override
    * @param {Object} options - Options for login and processing
-   * @param {string} options.token - Token used for login
-   * @param {string} options.processPath - Path to find commands, events, and components
-   * @param {string} options.guildCommandsId - Id of the guild for commands (optional)
-   * @description Leave token blank to default to its environment variable (TOKEN)
-   * @description Leave processPath blank to default to 'src' folder in the working directory.
-   * @description Leave guildCommandsId blank to default to global commands.
+   * @param {string} options.token - Token used for login - defaults to environment variable 'TOKEN'
+   * @param {string} options.processPath - Path to find commands, events, and components - defaults to process root
+   * @param {string} options.guildCommandsId - Id of the guild for commands (optional) - defaults to global commands
+   * @param {boolean} options.nativeCommandEvent Enable/Disable the built in command event - defaults to enabled
+   * @param {boolean} options.nativeComponentEvent Enable/Disable the built in component event - defaults to enabled
+   * @param {boolean} options.nativeModalEvent Enable/Disable the built in modal event - defaults to enabled
    * @throws {Error} Throws an error if environment variable TOKEN is missing and a token is not provided.
    */
   login(options = {}) {
-    const { token, processPath, guildCommandsId } = options;
+    const optionsRes = options instanceof ClientOptions ? options.getOptions() : options;
+    const { token, processPath, guildCommandsId, nativeCommandEvent, nativeComponentEvent, nativeModalEvent } = optionsRes;
     this.token = token || process.env.TOKEN;
     const dirPath = processPath ? path.join(process.cwd(), processPath) : process.cwd();
     const readyStart = process.hrtime();
@@ -262,12 +264,23 @@ class ShardClient extends Client {
       const readyEnd = process.hrtime(readyStart);
       const readyTotal = (readyEnd[0] * 1e9 + readyEnd[1]) / 1e6;
       console.log(chalk.hex('#92fc74')(`Logged in as ${client.user.tag} (${readyTotal.toFixed(2)}ms)`));
-      await client.application.commands.set([]);
       await this.processApp(client, guildCommandsId, dirPath);
       client.on(Events.InteractionCreate, interaction => {
-        if (interaction.isChatInputCommand() || interaction.isAutocomplete()) return client.emit(Events.CommandEvent, (client, interaction));
-        if (interaction.isButton() || interaction.isAnySelectMenu()) return client.emit(Events.ComponentEvent, (client, interaction));
-        if (interaction.isModalSubmit()) return client.emit(Events.ModalEvent, (client, interaction));
+        if (nativeCommandEvent) {
+          if (interaction.isChatInputCommand() || interaction.isAutocomplete()) {
+            return client.emit(Events.CommandEvent, (client, interaction));
+          }
+        }
+        if (nativeComponentEvent) {
+          if (interaction.isButton() || interaction.isAnySelectMenu()) {
+            return client.emit(Events.ComponentEvent, (client, interaction));
+          }
+        }
+        if (nativeModalEvent) {
+          if (interaction.isModalSubmit()) {
+            return client.emit(Events.ModalEvent, (client, interaction));
+          }
+        }
       });
     });
     super.login(this.token);
