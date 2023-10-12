@@ -45,23 +45,9 @@ npm install shardclient
 Here's a basic example of how to set up your custom Discord.js client using ShardClient:
 
 ```javascript
-const { ShardClient } =  require('shardclient')
-
-const  bot  =  new  ShardClient()
-
-/*
-
-Optional client options:
-
-token - Token used for login (Will default to environment variable TOKEN)
-
-processPath - Path to start the directory sweep from (Will default to process root)
-
-guildCommandsId - Id of the guild for commands (will default to global commands)
-
-*/
-
-bot.login({}); 
+const { ShardClient, ClientOptions } = require('shardclient')
+const bot = new ShardClient()
+bot.login(new ClientOptions());
 ```
 For detailed usage and examples, please refer to the [example](./example/) folder.
 
