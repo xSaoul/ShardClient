@@ -118,6 +118,10 @@ class ClientOptions {
     return this;
   }
 
+  /**
+   * @private
+   * @returns {Object} - Client options in object form
+   */
   getOptions() {
     return this.options;
   }
