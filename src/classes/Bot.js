@@ -1,4 +1,4 @@
-const { Client, Collection, Partials } = require('discord.js');
+const { Client, Collection } = require('discord.js');
 const { ClientOptions } = require('./util/ClientOptions');
 const { Events } = require('./builders/Events');
 const Discord = require('discord.js');
@@ -38,20 +38,21 @@ class ShardClient extends Client {
    * @tutorial https://discordjs.guide/popular-topics/partials.html#enabling-partials partial strutcures tutorial form Discord.js Guide
    */
   constructor(options = {}) {
-    const defaultOptions = {
-      partials: [
-        Partials.Channel,
-        Partials.GuildMember,
-        Partials.GuildScheduledEvent,
-        Partials.Message,
-        Partials.Reaction,
-        Partials.ThreadMember,
-        Partials.User,
-      ],
-      intents: [32767],
+    const clientOptions = options instanceof ClientOptions ? options.getOptions() : options;
+    const mergedOptions = {
+      ...clientOptions,
+      ...options,
     };
-    super(Object.assign({}, defaultOptions, options));
-    this.token = process.env.TOKEN;
+
+    super(mergedOptions);
+
+    this.token = mergedOptions.token || process.env.TOKEN;
+    this.processPath = mergedOptions.processPath;
+    this.guildCommandsId = mergedOptions.guildCommandsId;
+    this.nativeCommandEvent = mergedOptions.nativeCommandEvent;
+    this.nativeComponentEvent = mergedOptions.nativeComponentEvent;
+    this.nativeModalEvent = mergedOptions.nativeModalEvent;
+
     this.usedTypes = new Set();
     this.Discord = Discord;
     this.tableChars = {
@@ -254,10 +255,8 @@ class ShardClient extends Client {
    * @param {boolean} options.nativeModalEvent Enable/Disable the built in modal event - defaults to enabled
    * @throws {Error} Throws an error if environment variable TOKEN is missing and a token is not provided.
    */
-  login(options = {}) {
-    const optionsRes = options instanceof ClientOptions ? options.getOptions() : options;
-    const { token, processPath, guildCommandsId, nativeCommandEvent, nativeComponentEvent, nativeModalEvent } = optionsRes;
-    this.token = token || process.env.TOKEN;
+  login() {
+    const { token, processPath, guildCommandsId, nativeCommandEvent, nativeComponentEvent, nativeModalEvent } = this;
     const dirPath = processPath ? path.join(process.cwd(), processPath) : process.cwd();
     const readyStart = process.hrtime();
     super.once(Events.ClientReady, async client => {
@@ -283,7 +282,7 @@ class ShardClient extends Client {
         }
       });
     });
-    super.login(this.token);
+    super.login(token);
   }
 }
 module.exports = ShardClient;

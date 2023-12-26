@@ -1,7 +1,6 @@
 const { ShardClient, ClientOptions } = require('shardclient')
 const { Partials, GatewayIntentBits } = require('discord.js');
-const bot = new ShardClient()
-bot.login(
+const bot = new ShardClient(
   new ClientOptions()
   .setPartials([
     Partials.Message, 
@@ -17,4 +16,5 @@ bot.login(
   .setNativeCommandEvent(false) // optional, enables/disables the built in command event, defaults to false
   .setNativeComponentEvent(false) // optional, enables/disables the built in component event, defaults to false
   .setNativeModalEvent(false) // optional, enables/disables the built in modal event, defaults to false (NOT YET IMPLIMENTED)
-);
+)
+bot.login();
