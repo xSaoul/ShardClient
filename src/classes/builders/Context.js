@@ -15,6 +15,7 @@ class CommandContext {
     this.user = interaction.member.user;
     this.member = interaction.member;
     this.guild = interaction.guild;
+    this.message = interaction.message;
   }
 }
 

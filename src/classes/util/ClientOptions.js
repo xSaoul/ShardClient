@@ -42,6 +42,7 @@ class ClientOptions {
       nativeCommandEvent: true,
       nativeComponentEvent: true,
       nativeModalEvent: false,
+      nativeReloadCommand: true,
     };
   }
 
@@ -103,6 +104,15 @@ class ClientOptions {
    */
   setNativeModalEvent(enabled) {
     this.options.nativeModalEvent = enabled;
+    return this;
+  }
+  /**
+   * Enable or disable the built-in modal event.
+   * @param {boolean} enabled - Whether to enable or disable the built-in modal event.
+   * @returns {ClientOptions} - The ClientOptions instance for method chaining.
+   */
+  setNativeReloadCommand(enabled) {
+    this.options.nativeReloadCommand = enabled;
     return this;
   }
 

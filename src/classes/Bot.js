@@ -14,6 +14,7 @@ const commonExclusions = [
   'package.json',
   'package-lock.json',
   'yarn.lock',
+  '.npm',
   '.env',
   '.env.local',
   '.git',
@@ -52,6 +53,7 @@ class ShardClient extends Client {
     this.nativeCommandEvent = mergedOptions.nativeCommandEvent;
     this.nativeComponentEvent = mergedOptions.nativeComponentEvent;
     this.nativeModalEvent = mergedOptions.nativeModalEvent;
+    this.nativeReloadCommand = mergedOptions.nativeReloadCommand;
 
     this.usedTypes = new Set();
     this.Discord = Discord;
@@ -163,6 +165,12 @@ class ShardClient extends Client {
       chars: this.tableChars,
     });
     const commandPromises = [];
+    if (this.nativeReloadCommand) {
+      const reloadCommand = require('../commands/reload');
+      reloadCommand.path = 'native\\reload.js';
+      client.commands.set(reloadCommand.name, reloadCommand);
+    }
+
     client.commands.forEach(command => {
       if (!command.error) {
         if (command.category?.length > 32)
