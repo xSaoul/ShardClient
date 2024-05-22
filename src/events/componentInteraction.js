@@ -1,7 +1,7 @@
 const { EventBuilder, Events } = require('../classes/builders/Events');
 const { ComponentContext } = require('../classes/builders/Context');
 module.exports = new EventBuilder()
-  .setName('componentInteraction')
+  .setName('ComponentInteraction')
   .setTrigger(Events.ComponentEvent)
   .setOnce(false)
   .setCallback(async (client, interaction) => {

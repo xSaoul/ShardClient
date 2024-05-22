@@ -1,12 +1,12 @@
 # Example
 
-The example folder can serve as a guide of how to use the bot. Each folder contains another readme file with a more in depth explanation of how each component works using ShardClient.
+This example folder can serve as a guide of how to use ShardClient. Each folder contains another readme file with a more in depth explanation of how each component works.
 
 ## Files
 
 - **[index.js](./index.js)**: Demonstrates how to create a main file.
 
-> _**Note:**_ index.js can be named anything you want as long as it matches your package.json, like normal with Node.js
+> _**Note:**_ index.js is simply your entry file you set in your package.json using Node
 
 ## Usage
 
@@ -19,18 +19,10 @@ const { Partials, GatewayIntentBits } = require('discord.js');
 
 ### Building
 
-The bot object can be used to login, and start the processing of all commands, events, and components. The login function also overrides and takes the responsibilities of the default discord.js login function.
+Starting off we want to create our client. This custom client class "ShardClient" allows us to add additional properties to the normal Discord.js client. Using the ClientOptions class we can use the provided methods to override both our custom properties as well as default options like intents and partials.
 
 ```javascript
-const bot = new ShardClient()
-```
-
-### Logging in
-
-The bot object can be used to login, and start the processing of all commands, events, and components. The login function also overrides and takes the responsibilities of the default discord.js login function.
-
-```javascript
-.login(
+const bot = new ShardClient(
   new ClientOptions()
   .setToken('example-token')
   .setProcessPath('./example-path')
@@ -38,7 +30,16 @@ The bot object can be used to login, and start the processing of all commands, e
   .setNativeCommandEvent(false)
   .setNativeComponentEvent(false)
   .setNativeModalEvent(false)
-);
+  .setNativeReloadCommand(false)
+)
+```
+
+### Logging in
+
+The bot object can be used to login, and start the processing of all commands, events, and components. The login function also overrides and takes the responsibilities of the default discord.js login function.
+
+```javascript
+.login();
 ```
 
 As previously stated, the .login function serves the same purpose as the one you're used to in discord.js. This means you can use all the same chained functions and properties. However, ShardClient adds some useful ones shown above and explained below.
