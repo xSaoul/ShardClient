@@ -107,24 +107,41 @@ class ClientOptions {
     return this;
   }
   /**
-   * Enable or disable the built-in modal event.
-   * @param {boolean} enabled - Whether to enable or disable the built-in modal event.
+   * Enable or disable the built-in reload command.
+   * @param {boolean} enabled - Whether to enable or disable the built-in reload command.
    * @returns {ClientOptions} - The ClientOptions instance for method chaining.
    */
   setNativeReloadCommand(enabled) {
     this.options.nativeReloadCommand = enabled;
     return this;
   }
-
+  /**
+   * Set the intents to be used in client creation.
+   * @param {Array} intents - Intents to be used.
+   * @returns {ClientOptions} - The ClientOptions instance for method chaining.
+   */
   setIntents(intents) {
     if (intents && !Array.isArray(intents)) throw new Error('Client intents must be an array.');
     this.options.intents = intents;
     return this;
   }
-
+  /**
+   * Set the partials to be used in client creation.
+   * @param {Array} partials - Partials to be used.
+   * @returns {ClientOptions} - The ClientOptions instance for method chaining.
+   */
   setPartials(partials) {
     if (partials && !Array.isArray(partials)) throw new Error('Client partials must be an array.');
     this.options.partials = partials;
+    return this;
+  }
+  /**
+   * Create an array or string containing a list of developer ids.
+   * @param {string} developers - String or array of developer ids.
+   * @returns {ClientOptions} - The ClientOptions instance for method chaining.
+   */
+  setDevelopers(developers) {
+    this.options.developers = developers;
     return this;
   }
 

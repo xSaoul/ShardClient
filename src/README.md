@@ -7,15 +7,19 @@ Welcome to ShardClient, a powerful extension for Discord.js that enhances your b
 
 ### Commands
 - **Category & Help Display**: Organize commands into categories and display helpful information.
-- **Command ID Handling**: Automatically attaches the Discord commandId and path to each command object for later reference.
+- **Command ID Handling**: Automatically attaches the Discord commandId and file path to each command object for later reference.
 - **Main & Subcommands**: Easily define main commands and subcommands for later use.
 - **Modularization**: Split commands and subcommands into separate files for better organization.
 - **Native**: Pre-built reload command to test changes on the fly without interrupting your bot usage. This can be disabled during client creating.
 
 ```javascript
 const { ShardClient, ClientOptions } = require('shardclient')
-const bot = new ShardClient()
-bot.login(new ClientOptions(.setNativeReloadCommand(false)));
+const bot = new ShardClient(
+  new ClientOptions(
+    .setDevelopers(['developerId', 'developer2Id'])
+    .setNativeReloadCommand(false)
+    ))
+bot.login();
 ```
 
 > **[Command Documentation](./example/commands/readme.md)**
@@ -27,12 +31,13 @@ bot.login(new ClientOptions(.setNativeReloadCommand(false)));
 
 ```javascript
 const { ShardClient, ClientOptions } = require('shardclient')
-const bot = new ShardClient()
-bot.login(new ClientOptions(
+const bot = new ShardClient(
+  new ClientOptions(
   .setNativeCommandEvent(false)
   .setNativeComponentEvent(false)
   .setNativeModalEvent(false)
-  ));
+  ))
+bot.login();
 ```
 > **[Event Documentation](./example/events/readme.md)**
 
@@ -63,8 +68,8 @@ Here's a basic example of how to set up your custom Discord.js client using Shar
 
 ```javascript
 const { ShardClient, ClientOptions } = require('shardclient')
-const bot = new ShardClient()
-bot.login(new ClientOptions());
+const bot = new ShardClient(new ClientOptions())
+bot.login();
 ```
 For detailed usage and examples, please refer to the [example](./example/) folder.
 

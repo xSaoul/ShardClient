@@ -48,6 +48,7 @@ class ShardClient extends Client {
     super(mergedOptions);
 
     this.token = mergedOptions.token || process.env.TOKEN;
+    this.developers = mergedOptions.developers;
     this.processPath = mergedOptions.processPath;
     this.guildCommandsId = mergedOptions.guildCommandsId;
     this.nativeCommandEvent = mergedOptions.nativeCommandEvent;
@@ -94,9 +95,11 @@ class ShardClient extends Client {
         if (stats.isFile() && path.extname(item) === '.js') {
           const req = require(itemPath);
           req.path = path.join('native', item);
-          if (!client[req._type]) client[req._type] = new Collection();
-          client[req._type].set(req.name, req);
-          if (!this.usedTypes.has(req._type)) this.usedTypes.add(req._type);
+          if (req._type) {
+            if (!client[req._type]) client[req._type] = new Collection();
+            client[req._type].set(req.name, req);
+            if (!this.usedTypes.has(req._type)) this.usedTypes.add(req._type);
+          }
         }
       }
     }
@@ -126,10 +129,12 @@ class ShardClient extends Client {
           // if callback empty, attach error to item
           if (req.callback?.toString().trim() === '() => {}') req.error = 'Callback Error';
           // attach item to its respective collection, if one does not exist, create it
-          if (!client[req._type]) client[req._type] = new Collection();
-          client[req._type].set(req.name || req.customId || req.trigger, req);
-          // if the collection type is not logged in usedTypes, add it
-          if (!this.usedTypes.has(req._type)) this.usedTypes.add(req._type);
+          if (req._type) {
+            if (!client[req._type]) client[req._type] = new Collection();
+            client[req._type].set(req.name || req.customId || req.trigger, req);
+            // if the collection type is not logged in usedTypes, add it
+            if (!this.usedTypes.has(req._type)) this.usedTypes.add(req._type);
+          }
         } catch (error) {
           console.error(`${chalk.hex('#FF1C1C')('ERROR')} reading JS file: ${path.join(currentDir, item)}`, error);
         }
@@ -257,10 +262,12 @@ class ShardClient extends Client {
    * @param {Object} options - Options for login and processing
    * @param {string} options.token - Token used for login - defaults to environment variable 'TOKEN'
    * @param {string} options.processPath - Path to find commands, events, and components - defaults to process root
+   * @param {string} options.developers - List of developers, string or array containing user.ids
    * @param {string} options.guildCommandsId - Id of the guild for commands (optional) - defaults to global commands
    * @param {boolean} options.nativeCommandEvent Enable/Disable the built in command event - defaults to enabled
    * @param {boolean} options.nativeComponentEvent Enable/Disable the built in component event - defaults to enabled
-   * @param {boolean} options.nativeModalEvent Enable/Disable the built in modal event - defaults to enabled
+   * @param {boolean} options.nativeModalEvent Enable/Disable the built in modal event - defaults to disabled
+   * @param {boolean} options.nativeReloadCommand Enable/Disable the built in reload command - defaults to enabled
    * @throws {Error} Throws an error if environment variable TOKEN is missing and a token is not provided.
    */
   login() {
