@@ -16,7 +16,6 @@ Welcome to ShardClient, a powerful extension for Discord.js that enhances your b
 const { ShardClient, ClientOptions } = require('shardclient')
 const bot = new ShardClient(
   new ClientOptions(
-    .setDevelopers(['developerId', 'developer2Id'])
     .setNativeReloadCommand(false)
     ))
 bot.login();

@@ -10,13 +10,34 @@ Welcome to ShardClient, a powerful extension for Discord.js that enhances your b
 - **Command ID Handling**: Automatically attaches the Discord commandId and file path to each command object for later reference.
 - **Main & Subcommands**: Easily define main commands and subcommands for later use.
 - **Modularization**: Split commands and subcommands into separate files for better organization.
+- **Native**: Pre-built reload command to test changes on the fly without interrupting your bot usage. This can be disabled during client creating.
+
+```javascript
+const { ShardClient, ClientOptions } = require('shardclient')
+const bot = new ShardClient(
+  new ClientOptions(
+    .setNativeReloadCommand(false)
+    ))
+bot.login();
+```
 
 > **[Command Documentation](./example/commands/readme.md)**
 
 ### Events
 - **Custom Events**: Custom events for each interaction type for greater control over your bot.
 - **Flexible Event Naming**: Optional event naming for your convenience.
+- **Native**: Commands, components, and modals are already handled for you! If you'd like to use your own events, you can disable ours during client creation.
 
+```javascript
+const { ShardClient, ClientOptions } = require('shardclient')
+const bot = new ShardClient(
+  new ClientOptions(
+  .setNativeCommandEvent(false)
+  .setNativeComponentEvent(false)
+  .setNativeModalEvent(false)
+  ))
+bot.login();
+```
 > **[Event Documentation](./example/events/readme.md)**
 
 ### Components
