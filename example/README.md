@@ -54,7 +54,9 @@ ShardClient adds some useful properties to help start and maintain your bot. Her
 
 - `.setToken(String)`: Discord token used for login. This can be left out only if there is a .env file containg `TOKEN = String`
 - `.setProcessPath(String)`: This property allows you to set where you want the processing of files to start. If left blank, the client will start where the process does, or the same file as your main/index
+- `.setDevelopers`: Creates client.developers for later usage. This is what determines if a user can use the native /reload command.
 - `.setGuildCommandsId(String)`: Not ready to push your commands globally? This property allows you to specify which guild to register commands to.
 - `.setNativeCommandEvent(Boolean)`: If you'd like to handle command interactions on your own, you can supress the built in function for commands.
 - `.setNativeComponentEvent(Boolean)`: If you'd like to handle component interactions on your own, you can supress the built in function for commands.
 - `.setNativeModalEvent(Boolean)`: Unfortunately, ShardClient doesn't currently handle Modals for you. Still, it provides a custom function that can be supressed or used.
+- `.setNativeReloadCommand(Boolean)`: Disable our pre-built reload command that allows you to push changes to your bot without restarting it.

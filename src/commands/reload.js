@@ -11,6 +11,8 @@ module.exports = new CommandBuilder()
     await ctx.interaction.respond(filteredCommands.map(choice => ({ name: choice.name, value: choice.name })));
   })
   .setCallback(ctx => {
+    if (!ctx.client.developers.includes(ctx.member.id))
+      return ctx.interaction.reply({ content: "I'm sorry, this command is for developers only!", ephemeral: true });
     const commandName = ctx.interaction.options.getString('command');
     const command = ctx.client.commands.get(commandName);
     const resolvedPath = require.resolve(path.join(process.cwd(), command.path));
