@@ -115,24 +115,19 @@ class ShardClient extends Client {
       const stats = fs.statSync(itemPath);
 
       if (commonExclusions.includes(item)) {
-        continue; // Skip processing this item
+        continue;
       }
       if (stats.isDirectory()) {
-        // Directory found, process again
         this.processApp(client, guildCommandsId, itemPath, path.join(currentDir, item));
       } else if (stats.isFile() && path.extname(item) === '.js') {
-        // JS file found, process as needed
         try {
           const req = require(itemPath);
-          if (req.isSubcommand) return;
+          if (req.isSubcommand) continue;
           req.path = path.join(currentDir, item);
-          // if callback empty, attach error to item
           if (req.callback?.toString().trim() === '() => {}') req.error = 'Callback Error';
-          // attach item to its respective collection, if one does not exist, create it
           if (req._type) {
             if (!client[req._type]) client[req._type] = new Collection();
             client[req._type].set(req.name || req.customId || req.trigger, req);
-            // if the collection type is not logged in usedTypes, add it
             if (!this.usedTypes.has(req._type)) this.usedTypes.add(req._type);
           }
         } catch (error) {
@@ -140,12 +135,10 @@ class ShardClient extends Client {
         }
       }
     }
-    // logging, if complete process all files to respective types
     if (currentDir !== '') {
       console.log(`${chalk.hex('#8AFFF9')('EXITED')} directory: ${currentDir}`);
     } else {
       console.log(`${chalk.hex('#8AFFF9')('COMPLETED PROCESSING')} for ${client.user.username}`);
-      // process only what types actually exist
       const processCommandsPromise = this.usedTypes.has('commands') ? this.processCommands(client, guildCommandsId) : null;
       const processEventsPromise = this.usedTypes.has('events') ? this.processEvents(client) : null;
       const processComponentsPromise = this.usedTypes.has('components') ? this.processComponents(client) : null;
