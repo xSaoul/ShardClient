@@ -164,12 +164,14 @@ class ShardClient extends Client {
    * @returns {Promise<void>} - A promise that resolves when all commands have been processed.
    */
   async processCommands(client, guildCommandsId) {
+    const startCommands = Date.now();
     const table = new Table({
       head: [chalk.hex('#00DBFF')('Command Name'), chalk.hex('#00DBFF')('File Path'), chalk.hex('#00DBFF')('Status')],
       colWidths: [30, 50, 10],
       chars: this.tableChars,
     });
-    const commandPromises = [];
+    const batchCommands = [];
+
     if (this.nativeReloadCommand) {
       const reloadCommand = require('../commands/reload');
       reloadCommand.path = 'native\\reload.js';
@@ -178,26 +180,37 @@ class ShardClient extends Client {
 
     client.commands.forEach(command => {
       if (!command.error) {
-        if (command.category?.length > 32)
-          return table.push([chalk.hex('#8AFFF9')('Category too long'), chalk.hex('#8AFFF9')(command.path), chalk.hex('#FF1C1C')('Failure')]);
-
-        const promise = client.application.commands
-          .create(command.toJSON(), guildCommandsId)
-          .then(appCommand => {
-            command.id = appCommand.id;
-            table.push([chalk.hex('#8AFFF9')(command.name), chalk.hex('#8AFFF9')(command.path), chalk.hex('#1CFF43')('Success')]);
-          })
-          .catch(error => {
-            table.push([chalk.hex('#8AFFF9')('Creation Error'), chalk.hex('#8AFFF9')(command.path), chalk.hex('#FF1C1C')('Failure')]);
-            console.error(error);
-          });
-
-        commandPromises.push(promise);
+        if (command.category?.length > 32) {
+          table.push([chalk.hex('#8AFFF9')('Category too long'), chalk.hex('#8AFFF9')(command.path), chalk.hex('#FF1C1C')('Failure')]);
+          return;
+        }
+        batchCommands.push(command.toJSON());
       } else {
         table.push([chalk.hex('#8AFFF9')(command.error), chalk.hex('#8AFFF9')(command.path), chalk.hex('#FF1C1C')('Failure')]);
       }
     });
-    await Promise.all(commandPromises);
+
+    try {
+      const appCommands = await client.application.commands.set(batchCommands, guildCommandsId);
+
+      client.commands.forEach(command => {
+        const createdCommand = appCommands.find(cmd => cmd.name === command.name);
+        if (createdCommand) {
+          command.id = createdCommand.id;
+          table.push([chalk.hex('#8AFFF9')(command.name), chalk.hex('#8AFFF9')(command.path), chalk.hex('#1CFF43')('Success')]);
+        } else {
+          table.push([chalk.hex('#8AFFF9')('Creation Error'), chalk.hex('#8AFFF9')(command.path), chalk.hex('#FF1C1C')('Failure')]);
+        }
+      });
+    } catch (error) {
+      console.error('Failed to create commands:', error);
+      table.push([chalk.hex('#8AFFF9')('Batch Creation Error'), chalk.hex('#8AFFF9')('N/A'), chalk.hex('#FF1C1C')('Failure')]);
+    }
+
+    const endCommands = Date.now();
+    const totalCommandTime = endCommands - startCommands;
+
+    table.push([chalk.hex('#00DBFF')('Total Runtime'), chalk.hex('#00DBFF')('-'), chalk.hex('#00DBFF')(`${totalCommandTime}ms`)]);
 
     console.log(table.toString());
   }
@@ -207,6 +220,7 @@ class ShardClient extends Client {
    * @param {Client} client - The Discord client to process events with
    */
   processEvents(client) {
+    const startEvents = Date.now();
     const table = new Table({
       head: [chalk.hex('#FDB93E')('Event Name'), chalk.hex('#FDB93E')('File Path'), chalk.hex('#FDB93E')('Status')],
       colWidths: [30, 50, 10],
@@ -229,6 +243,9 @@ class ShardClient extends Client {
         table.push([chalk.hex('#FFC864')(event.error), chalk.hex('#FFC864')(event.path), chalk.hex('#FF1C1C')('Failure')]);
       }
     });
+    const endEvents = Date.now();
+    const totalEventTime = endEvents - startEvents;
+    table.push([chalk.hex('#FDB93E')('Total Runtime'), chalk.hex('#FDB93E')('-'), chalk.hex('#FDB93E')(`${totalEventTime}ms`)]);
     console.log(table.toString());
     return client.emit(Events.ClientReady, client);
   }
@@ -238,6 +255,7 @@ class ShardClient extends Client {
    * @param {Client} client - The Discord client to process components with
    */
   processComponents(client) {
+    const startComponents = Date.now();
     const table = new Table({
       head: [chalk.hex('#FF5BE5')('Event Name'), chalk.hex('#FF5BE5')('File Path'), chalk.hex('#FF5BE5')('Status')],
       colWidths: [30, 50, 10],
@@ -250,6 +268,9 @@ class ShardClient extends Client {
         return table.push([chalk.hex('#FF8CED')('customId Missing'), chalk.hex('#FF8CED')(component.path), chalk.hex('#FF1C1C')('Failure')]);
       table.push([chalk.hex('#FF8CED')(component.customId), chalk.hex('#FF8CED')(component.path), chalk.hex('#1CFF43')('Success')]);
     });
+    const endComponents = Date.now();
+    const totalComponentTime = endComponents - startComponents;
+    table.push([chalk.hex('#FF5BE5')('Total Runtime'), chalk.hex('#FF5BE5')('-'), chalk.hex('#FF5BE5')(`${totalComponentTime}ms`)]);
     console.log(table.toString());
   }
 
